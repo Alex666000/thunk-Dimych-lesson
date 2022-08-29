@@ -5,53 +5,76 @@ import {Dispatch} from 'redux';
 import {AppRootStateType} from './store';
 
 const initialState: TasksStateType = {}
-
+//  let [tasks, setTasks] = useState<TasksStateType>( {
+//         [todolistId1]:
+//         [ -- таски хранятся в массиве:
+                // task
+//             {
+//                 id: v1(), title: 'HTML&CSS', status: TaskStatuses.Completed, todoListId: todolistId1, description: '',
+//                 startDate: '', deadline: '', addedDate: '', order: 0, priority: TaskPriorities.Low
+//             },
+                // task
+//             {
+//                 id: v1(), title: 'JS', status: TaskStatuses.Completed, todoListId: todolistId1, description: '',
+//                 startDate: '', deadline: '', addedDate: '', order: 0, priority: TaskPriorities.Low
+//             }
+//         ],
 export const tasksReducer = (state: TasksStateType = initialState, action: ActionsType): TasksStateType => {
     switch (action.type) {
         case 'REMOVE-TASK': {
-            const stateCopy = {...state}
-            const tasks = stateCopy[action.todolistId];
-            const newTasks = tasks.filter(t => t.id != action.taskId);
-            stateCopy[action.todolistId] = newTasks;
-            return stateCopy;
+            // хотим перезаписать свойство: тем что было, но в нём сделать фильтрацию
+           return {...state,[action.todolistId]: {...state[action.todolistId].filter(task => task.id !== action.taskId)}}
+            // const stateCopy = {...state}
+            // const tasks = stateCopy[action.todolistId];
+            // const newTasks = tasks.filter(t => t.id != action.taskId);
+            // stateCopy[action.todolistId] = newTasks;
+            // return stateCopy;
         }
-        case 'ADD-TASK': {
+        case 'ADD-TASK':
+            return {...state, [action.task.todoListId]: [action.task, ...state[action.task.todoListId]]}
             // теперь reducer не формирует новую таску - она приходит из action готовая
-            const stateCopy = {...state}
+           /* const stateCopy = {...state}
             const newTask = action.task
             const tasks = stateCopy[newTask.todoListId];
             const newTasks = [newTask, ...tasks];
             stateCopy[newTask.todoListId] = newTasks;
-            return stateCopy;
-        }
-        case 'UPDATE-TASK': {
-            let todolistTasks = state[action.todolistId];
-            let newTasksArray = todolistTasks
-                .map(t => t.id === action.taskId ? {...t, ...action.model} : t);
-            state[action.todolistId] = newTasksArray;
-            return ({...state});
-        }
-        case 'ADD-TODOLIST': {
+            return stateCopy;*/
+        case 'UPDATE-TASK':
             return {
-                ...state,
-                [action.todolist.id]: []
+                ...state, [action.todolistId]: state[action.todolistId]
+                    .map(t => t.id === action.taskId ? {...t, ...action.model} : t)
             }
-        }
+        /* let todolistTasks = state[action.todolistId];
+         let newTasksArray = todolistTasks
+             .map(t => t.id === action.taskId ? {...t, ...action.model} : t);
+         state[action.todolistId] = newTasksArray;
+         return ({...state});
+     */
+        case 'ADD-TODOLIST':
+            return {...state, [action.todolist.id]: []}
         case 'REMOVE-TODOLIST': {
             const copyState = {...state};
             delete copyState[action.id];
             return copyState;
         }
         case 'SET-TODOLISTS': {
-            const copyState = {...state}
             // в этом state создать свойство на основе тех todo что к нам прилетели - должны пробежаться по всем todo что прилетели и на основе тудулистов зафиксировать в этом объекте свойство:
             //  forEach - просто пробегается и с каждым элементом что-то делает или на основе каждого эл.что-то делает
             // берем и в объекте copyState создаем дополнительное свойство:
+            const copyState = {...state}
             action.todolists.forEach(tl => {
                 copyState[tl.id] = []
             })
+            /*
+             // reduce пробегается по каждому элементу и стартовый объект видоизменяет - то с чего начать
+          return action.todolists.reduce((acc, tl) => {
+              copyState[tl.id] = []
+              return copyState
+          }, {...state})
+        */
         }
         case 'SET-TASKS':
+            // return {...state, [action.todolistId]: action.tasks }
             const copyState = {...state}
             if (action.type !== 'SET-TODOLISTS') {
                 copyState[action.todolistId] = action.tasks
