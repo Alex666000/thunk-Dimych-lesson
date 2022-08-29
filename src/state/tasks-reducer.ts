@@ -1,4 +1,4 @@
-import {TasksStateType} from '../App';
+import {TasksStateType} from '../trash/App';
 import {TaskType, todolistsAPI, UpdateTaskModelType} from '../api/todolists-api'
 import {AddTodolistActionType, RemoveTodolistActionType, SetTodolistsActionType} from './todolists-reducer';
 import {Dispatch} from 'redux';
@@ -96,7 +96,7 @@ export const setTasksAC = (tasks: Array<TaskType>, todolistId: string) =>
     ({type: 'SET-TASKS', tasks, todolistId}) as const
 
 // thunk
-export const fetchTasksTC = (todolistId: string) => (dispatch: Dispatch) => {
+export const fetchTasksTC = (todolistId: string) => (dispatch:  Dispatch<ActionsType>) => {
     todolistsAPI.getTasks(todolistId)
         .then((res) => {
             const tasks = res.data.items
@@ -104,13 +104,13 @@ export const fetchTasksTC = (todolistId: string) => (dispatch: Dispatch) => {
             dispatch(action)
         })
 }
-export const removeTaskTC = (todolistId: string, taskId: string) => (dispatch: Dispatch) => {
+export const removeTaskTC = (todolistId: string, taskId: string) => (dispatch:  Dispatch<ActionsType>) => {
     todolistsAPI.deleteTask(todolistId, taskId)
         .then((res) => {
             dispatch(removeTaskAC(taskId, todolistId))
         })
 }
-export const addTaskTC = (todolistId: string, taskId: string) => (dispatch: Dispatch) => {
+export const addTaskTC = (todolistId: string, taskId: string) => (dispatch:  Dispatch<ActionsType>) => {
     todolistsAPI.createTask(todolistId, taskId)
         .then((res) => {
             dispatch(addTaskAC(res.data.data.item))
@@ -155,10 +155,9 @@ export const changeTaskStatusTC = (taskId: string, status: TaskStatuses, todolis
 */
 // ----------------------------------------------------------------------------------
 // общая thunk - вместо changeTaskStatusTC - так как моделька одна и та же только tittle меняется на status
-
 // тут domainModel пришла в параметры из UI при вызове ТС
 export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelType, todolistId: string) =>
-    (dispatch: Dispatch, getState: () => AppRootStateType) => {
+    (dispatch:  Dispatch<ActionsType>, getState: () => AppRootStateType) => {
         const state = getState()
         const task = state.tasks[todolistId].find(t => t.id === taskId)
 
