@@ -1,8 +1,7 @@
-import {TasksStateType} from '../trash/App';
-import {TaskType, todolistsAPI, UpdateTaskModelType} from '../api/todolists-api'
+import {TaskType, todolistsAPI, UpdateTaskModelType} from '../../api/todolists-api'
 import {AddTodolistActionType, RemoveTodolistActionType, SetTodolistsActionType} from './todolists-reducer';
 import {Dispatch} from 'redux';
-import {AppRootStateType} from './store';
+import {AppRootStateType} from '../../app/store';
 
 const initialState: TasksStateType = {}
 //  let [tasks, setTasks] = useState<TasksStateType>( {
@@ -185,6 +184,9 @@ export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelT
 
 // types
 // создадим тип модельки(скопировали с АПИ) - и назовем по другому
+export type TasksStateType = {
+    [key: string]: Array<TaskType>
+}
 export type UpdateDomainTaskModelType = {
     title?: string
     description?: string

@@ -1,5 +1,4 @@
 import React from 'react'
-import {action} from '@storybook/addon-actions'
 import App from './App'
 import {ReduxStoreProviderDecorator} from '../stories/decorators/ReduxStoreProviderDecorator'
 
@@ -9,6 +8,6 @@ export default {
     decorators: [ReduxStoreProviderDecorator]
 }
 
-export const AppWithReduxBaseExample = (props: any) => {
+export const AppBaseExample = (props: any) => {
     return (<App />)
 }
